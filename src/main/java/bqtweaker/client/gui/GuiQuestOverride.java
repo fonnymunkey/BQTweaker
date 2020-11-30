@@ -316,12 +316,43 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         cvInner.addPanel(tskScrollBar);
         tskScroll.setScrollDriverY(tskScrollBar);
         
+        int panelPrevY = 0;
+        int panelPrevHeight = 0;
+        
         for(int index = 0; index<quest.getTasks().size(); index++) {
         	ITask tsk = quest.getTasks().getEntries().get(index).getValue();
-        	PanelTextBox tskTitle = new PanelTextBox(new GuiRectangle(0, index * rectTask.getHeight(), rectTask.getWidth(), 16, 0), QuestTranslation.translate(tsk.getUnlocalisedName())).setColor(PresetColor.TEXT_HEADER.getColor()).setAlignment(1);
-        	IGuiPanel pnTask = tsk.getTaskGui(new GuiRectangle(0, (index * rectTask.getHeight()) + 16, rectTask.getWidth(), rectTask.getHeight()-16, 0), new DBEntry<>(questID, quest));
+        	PanelTextBox tskTitle = new PanelTextBox(new GuiRectangle(0, panelPrevY + panelPrevHeight, rectTask.getWidth(), 16, 0), QuestTranslation.translate(tsk.getUnlocalisedName())).setColor(PresetColor.TEXT_HEADER.getColor()).setAlignment(1);
+        	IGuiPanel pnTask = tsk.getTaskGui(new GuiRectangle(0, panelPrevY + panelPrevHeight + 16, rectTask.getWidth(), 32, 0), new DBEntry<>(questID, quest));
         	tskScroll.addCulledPanel(tskTitle, true);
         	tskScroll.addCulledPanel(pnTask, true);
+        	
+        	int height = rectTask.getHeight()-16;//Fallback height if panel does not have scrolling canvas
+        	
+        	//Need to get panel *after* adding it, to get info on size required
+        	CanvasEmpty pnTaskCanvas = (CanvasEmpty)pnTask;
+        	for(IGuiPanel pnl : pnTaskCanvas.getChildren()) {
+        		if(pnl.getClass().isAssignableFrom(CanvasScrolling.class)) {
+        			CanvasScrolling pnlScrolling = (CanvasScrolling)pnl;
+        			height = pnlScrolling.getScrollBounds().getHeight() + 32;//Set required height of panel
+        		}
+        	}
+        	
+        	//Create new panel using modified height
+        	IGuiPanel pnTaskReplacement = tsk.getTaskGui(new GuiRectangle(0, panelPrevY + panelPrevHeight + 16, rectTask.getWidth(), height, 0), new DBEntry<>(questID, quest));
+        	tskScroll.removePanel(pnTask);
+        	tskScroll.addCulledPanel(pnTaskReplacement, true);
+        	
+        	//Remove scrollbar from modified panel
+        	CanvasEmpty pnTaskReplacementCanvas = (CanvasEmpty)pnTaskReplacement;
+        	for(IGuiPanel pnlRepl : pnTaskReplacementCanvas.getChildren()) {
+        		if(pnlRepl.getClass().isAssignableFrom(PanelVScrollBar.class)) {
+        			pnTaskReplacementCanvas.removePanel(pnlRepl);
+        		}
+        	}
+        	
+        	//Set size information for if there is >1 task
+        	panelPrevY = panelPrevY + panelPrevHeight + 16;
+        	panelPrevHeight = height+8;//+8 for padding
         }
         
         tskScrollBar.setEnabled(tskScroll.getScrollBounds().getHeight() > 0);

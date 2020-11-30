@@ -29,5 +29,6 @@ public class ConfigHandler {
 	public static void saveBQNotif() {
 		config.get("Notifications", "bqNotifEnabled", bqNotifEnabled, "Enable BetterQuesting quest notifications?").set(BQ_Settings.questNotices);
 		config.save();
+		config.load();
 	}
 }
