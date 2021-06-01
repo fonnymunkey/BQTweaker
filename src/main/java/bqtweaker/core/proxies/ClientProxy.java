@@ -1,5 +1,6 @@
 package bqtweaker.core.proxies;
 
+import bqtweaker.client.BQTweaker_Keybindings;
 import bqtweaker.handlers.ConfigHandler;
 import bqtweaker.handlers.GuiHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,6 +18,7 @@ public class ClientProxy extends CommonProxy
 	public void registerHandlers()
 	{
 		MinecraftForge.EVENT_BUS.register(GuiHandler.class);
+		BQTweaker_Keybindings.RegisterKeys();
 	}
 	
 	@Override

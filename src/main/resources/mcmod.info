@@ -9,7 +9,7 @@
   "updateUrl": "",
   "authorList": ["Fonnymunkey"],
   "credits": "",
-  "logoFile": "title.jpg",
+  "logoFile": "title.png",
   "screenshots": [],
   "dependencies": ["betterquesting"]
 }

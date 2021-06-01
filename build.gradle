@@ -11,7 +11,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-version = "1.0.0"
+version = "1.2.0"
 group = "bqtweaker" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "BQTweaker"
 
@@ -54,7 +54,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-	compile files('libs/BetterQuesting-3.5.317.jar')
+	compile files('libs/BetterQuesting-3.5.329.jar')
 }
 
 processResources {

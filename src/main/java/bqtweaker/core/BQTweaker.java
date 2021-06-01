@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class BQTweaker
 {
     public static final String MODID = "bqtweaker";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.2.0";
     public static final String NAME = "BQTweaker";
     public static final String PROXY = "bqtweaker.core.proxies";
     public static final String CHANNEL = "BQTWEAKER";
@@ -37,10 +37,11 @@ public class BQTweaker
     	logger = event.getModLog();
     	network = NetworkRegistry.INSTANCE.newSimpleChannel(CHANNEL);  
     	proxy.registerConfig(event);
-    	ConfigHandler.loadBQNotif();
+    	if(ConfigHandler.bqHomeOverride) ConfigHandler.loadBQNotif();
     }
     
-    @EventHandler
+    @SuppressWarnings("unused")
+	@EventHandler
     public void init(FMLInitializationEvent event)
     {
         ModContainer modContainer = Loader.instance().getIndexedModList().get("bqtweaker");
@@ -54,7 +55,7 @@ public class BQTweaker
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-    	if(Loader.isModLoaded("betterquesting")) proxy.registerHandlers();
+    	if(Loader.isModLoaded("betterquesting")) { proxy.registerHandlers(); }
     }
     
     @EventHandler
