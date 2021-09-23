@@ -364,12 +364,14 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         	int height = rectTask.getHeight()-16;//Fallback height if panel does not have scrolling canvas
         	
         	//Need to get panel *after* adding it, to get info on size required
-        	CanvasEmpty pnTaskCanvas = (CanvasEmpty)pnTask;
-        	for(IGuiPanel pnl : pnTaskCanvas.getChildren()) {
-        		if(pnl.getClass().isAssignableFrom(CanvasScrolling.class)) {
-        			CanvasScrolling pnlScrolling = (CanvasScrolling)pnl;
-        			height = pnlScrolling.getScrollBounds().getHeight() + 32;//Set required height of panel
-        		}
+        	if(pnTask instanceof CanvasEmpty) {
+            	CanvasEmpty pnTaskCanvas = (CanvasEmpty)pnTask;
+            	for(IGuiPanel pnl : pnTaskCanvas.getChildren()) {
+            		if(pnl.getClass().isAssignableFrom(CanvasScrolling.class)) {
+            			CanvasScrolling pnlScrolling = (CanvasScrolling)pnl;
+            			height = pnlScrolling.getScrollBounds().getHeight() + 32;//Set required height of panel
+            		}
+            	}
         	}
         	
         	//Create new panel using modified height
@@ -383,11 +385,13 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         	tskScroll.addCulledPanel(pnTaskReplacement, true);
         	
         	//Remove scrollbar from modified panel
-        	CanvasEmpty pnTaskReplacementCanvas = (CanvasEmpty)pnTaskReplacement;
-        	for(IGuiPanel pnlRepl : pnTaskReplacementCanvas.getChildren()) {
-        		if(pnlRepl.getClass().isAssignableFrom(PanelVScrollBar.class)) {
-        			pnTaskReplacementCanvas.removePanel(pnlRepl);
-        		}
+        	if(pnTaskReplacement instanceof CanvasEmpty) {
+            	CanvasEmpty pnTaskReplacementCanvas = (CanvasEmpty)pnTaskReplacement;
+            	for(IGuiPanel pnlRepl : pnTaskReplacementCanvas.getChildren()) {
+            		if(pnlRepl.getClass().isAssignableFrom(PanelVScrollBar.class)) {
+            			pnTaskReplacementCanvas.removePanel(pnlRepl);
+            		}
+            	}
         	}
         	
         	//Set size information for if there is >1 task
