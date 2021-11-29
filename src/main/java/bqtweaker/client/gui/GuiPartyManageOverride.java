@@ -176,8 +176,12 @@ public class GuiPartyManageOverride extends GuiScreenCanvas implements IPEventLi
                 mName = mc.fontRenderer.trimStringToWidth(mName, cvWidth - 58 - elSize) + "...";
             }
     
+            
+            //BQTweaker mobends patch
             PanelPlayerPortraitOverride pnPortrait = new PanelPlayerPortraitOverride(new GuiRectangle(0, i * 32, 32, 32, 0), mid, mName);
             cvUserList.addPanel(pnPortrait);
+            
+            
             
             PanelTextBox txMemName = new PanelTextBox(new GuiRectangle(32, i * 32 + 4, cvWidth - 32, 12, 0), mName);
             txMemName.setColor(PresetColor.TEXT_MAIN.getColor());

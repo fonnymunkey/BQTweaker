@@ -1,7 +1,5 @@
 package bqtweaker.core.proxies;
 
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
 public class CommonProxy
 {
 	public boolean isClient()
@@ -10,10 +8,6 @@ public class CommonProxy
 	}
 	
 	public void registerHandlers()
-	{
-	}
-	
-	public void registerConfig(FMLPreInitializationEvent event)
 	{
 	}
 }

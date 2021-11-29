@@ -104,17 +104,22 @@ public class GuiHomeOverride extends GuiScreenCanvas
 		inCan.addPanel(btnParty);
 		PanelButton btnTheme = new PanelButton(new GuiTransform(new Vector4f(0.75F, 1F, 1F, 1F), new GuiPadding(0, -32, 0, 0), 0), 3, QuestTranslation.translate("betterquesting.home.theme"));
 		inCan.addPanel(btnTheme);
-		PanelButton btnNotif = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_RIGHT, -140, -52, 136, 16, 0), 420, (BQ_Settings.questNotices ? "Quest Notifications: On" : "Quest Notifications: Off"))
-		{
-    		@Override
-    		public void onButtonClick(){	
-    		BQ_Settings.questNotices = !BQ_Settings.questNotices;
-    		this.setText(BQ_Settings.questNotices ? "Quest Notifications: On" : "Quest Notifications: Off");
-    		ConfigHandler.saveBQNotif();
-    		}
-    	};
-    	btnNotif.setTooltip(Collections.singletonList("Toggle Quest Notifications"));
-		inCan.addPanel(btnNotif);
+		
+		
+		//BQTweaker Notification button
+		if(ConfigHandler.client.bqNotifEnabled) {
+			PanelButton btnNotif = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_RIGHT, -140, -52, 136, 16, 0), 420, (BQ_Settings.questNotices ? QuestTranslation.translate("bqtweaker.notification.enabled") : QuestTranslation.translate("bqtweaker.notification.disabled")))
+			{
+	    		@Override
+	    		public void onButtonClick(){	
+	    		BQ_Settings.questNotices = !BQ_Settings.questNotices;
+	    		this.setText(BQ_Settings.questNotices ? QuestTranslation.translate("bqtweaker.notification.enabled") : QuestTranslation.translate("bqtweaker.notification.disabled"));
+	    		}
+	    	};
+	    	btnNotif.setTooltip(Collections.singletonList(QuestTranslation.translate("bqtweaker.notification.tooltip")));
+			inCan.addPanel(btnNotif);
+		}
+		
 		
 		if(QuestingAPI.getAPI(ApiReference.SETTINGS).canUserEdit(mc.player))
 		{

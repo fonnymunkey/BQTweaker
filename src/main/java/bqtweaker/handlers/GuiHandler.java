@@ -32,11 +32,10 @@ public class GuiHandler
 {
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public static void overrideGuiQuest(GuiScreenEvent.InitGuiEvent.Pre event)
+	public void overrideGuiQuest(GuiScreenEvent.InitGuiEvent.Pre event)
 	{
-		if(event.getGui() instanceof GuiQuest && ConfigHandler.bqQuestOverride) {
+		if(event.getGui() instanceof GuiQuest && ConfigHandler.client.bqQuestOverride) {
 			GuiQuest preGui = (GuiQuest) event.getGui();
-			//Haha reflection go brrr
 			try {
 				Field fQuestID = preGui.getClass().getDeclaredField("questID");
 				fQuestID.setAccessible(true);
@@ -49,7 +48,7 @@ public class GuiHandler
 			catch(Exception ex) {}
 		}
 	
-    	if(event.getGui() instanceof GuiHome && ConfigHandler.bqHomeOverride) {
+    	if(event.getGui() instanceof GuiHome && ConfigHandler.client.bqHomeOverride) {
     		GuiHome preGui = (GuiHome) event.getGui();
     		GuiScreen parent = preGui.parent;
     		Minecraft mc = Minecraft.getMinecraft();
@@ -57,7 +56,7 @@ public class GuiHandler
     		mc.displayGuiScreen(guiHomeOverride);
     	}
     
-    	if(event.getGui() instanceof GuiQuestLines && ConfigHandler.bqQuestlineOverride) {
+    	if(event.getGui() instanceof GuiQuestLines && ConfigHandler.client.bqQuestlineOverride) {
     		GuiQuestLines preGui = (GuiQuestLines) event.getGui();
     		GuiScreen parent = preGui.parent;
     		Minecraft mc = Minecraft.getMinecraft();
@@ -65,7 +64,7 @@ public class GuiHandler
     		mc.displayGuiScreen(guiQuestLinesOverride);
     	}
     	
-    	if(event.getGui() instanceof GuiPartyCreate && ConfigHandler.bqMobendPatch) {
+    	if(event.getGui() instanceof GuiPartyCreate && ConfigHandler.client.bqPartyCreateOverride && ConfigHandler.client.bqMobendPatch) {
     		GuiPartyCreate preGui = (GuiPartyCreate) event.getGui();
     		GuiScreen parent = preGui.parent;
     		Minecraft mc = Minecraft.getMinecraft();
@@ -73,7 +72,7 @@ public class GuiHandler
     		mc.displayGuiScreen(guiPartyCreateOverride);
     	}
     	
-    	if(event.getGui() instanceof GuiPartyManage && ConfigHandler.bqMobendPatch) {
+    	if(event.getGui() instanceof GuiPartyManage && ConfigHandler.client.bqPartyManageOverride && ConfigHandler.client.bqMobendPatch) {
     		GuiPartyManage preGui = (GuiPartyManage) event.getGui();
     		GuiScreen parent = preGui.parent;
     		Minecraft mc = Minecraft.getMinecraft();
@@ -84,7 +83,7 @@ public class GuiHandler
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public static void onKeyTyped(GuiScreenEvent.KeyboardInputEvent.Pre event)
+	public void onKeyInput(GuiScreenEvent.KeyboardInputEvent.Pre event)
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.currentScreen instanceof GuiScreenCanvas && GameSettings.isKeyDown(BQTweaker_Keybindings.pageBack))
@@ -104,14 +103,10 @@ public class GuiHandler
 						break;
 					}
 				}
-				if(keyUsed) event.setCanceled(true);
-				else {
-					mc.displayGuiScreen(currScreenCanvas.parent);
-				}
+				event.setCanceled(true);
+				if(!keyUsed) mc.displayGuiScreen(currScreenCanvas.parent);
 			}
-			catch(Exception ex) {
-				System.out.println("error");
-			}
+			catch(Exception ex) {}
 		}
 	}
 }
