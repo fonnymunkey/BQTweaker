@@ -158,7 +158,7 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
         
         txDesc = new PanelTextBox(new GuiRectangle(0, 0, txDescScroll.getTransform().getWidth(), txDescScroll.getTransform().getHeight()), "", true);
         txDesc.setColor(PresetColor.TEXT_HEADER.getColor());
-        txDescScroll.addCulledPanel(txDesc, true);
+        txDescScroll.addCulledPanel(txDesc, false);
         
         cvFrame = new CanvasHoverTray(new GuiTransform(GuiAlign.FULL_BOX, new GuiPadding(174, 32, 8, 8), 0), new GuiTransform(GuiAlign.FULL_BOX, new GuiPadding(180, 32, 8, 8), 0), PresetTexture.AUX_FRAME_0.getTexture());
         cvFrame.setManualOpen(true);

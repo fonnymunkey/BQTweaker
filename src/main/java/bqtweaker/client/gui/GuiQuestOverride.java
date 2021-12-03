@@ -38,7 +38,6 @@ import betterquesting.questing.QuestDatabase;
 import bqtweaker.client.util.MobendPatcher;
 import bqtweaker.handlers.ConfigHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.Style;
@@ -265,7 +264,7 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
             			
             			if(embedEntry[0].contentEquals("TypeImage")) {
             	        	IGuiTexture embedImage = new SimpleTexture(new ResourceLocation(embedEntry[1]), new GuiRectangle(0, 0, Integer.parseInt(embedEntry[4]), Integer.parseInt(embedEntry[5])));
-            	        	cvDesc.addCulledPanel(new PanelGeneric(new GuiRectangle((cvDesc.getTransform().getWidth()-width)/2, panelPrevY+panelPrevHeight+8, width, height), embedImage), true);
+            	        	cvDesc.addCulledPanel(new PanelGeneric(new GuiRectangle((cvDesc.getTransform().getWidth()-width)/2, panelPrevY+panelPrevHeight+8, width, height), embedImage), false);
             			}
             			else if(embedEntry[0].contentEquals("TypeLink")) {
             	        	PanelButton btnLink = new PanelButton(new GuiRectangle((cvDesc.getTransform().getWidth()-width)/2, panelPrevY+panelPrevHeight+8, width, height), 69, embedEntry[4]);
@@ -275,7 +274,7 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
             	            	this.handleComponentClick(component);
             	        	});
             	        	btnLink.setTextAlignment(1);
-            	        	cvDesc.addCulledPanel(btnLink, true);
+            	        	cvDesc.addCulledPanel(btnLink, false);
             			}
             			
         	        	panelPrevY = panelPrevY+panelPrevHeight+8;
@@ -284,9 +283,9 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         			catch(Exception ex) {}
         		}
         		else {
-        			PanelTextBox paDesc = new PanelTextBox(new GuiRectangle(0, panelPrevY+panelPrevHeight+12, cvDesc.getTransform().getWidth(), 0), ConfigHandler.client.bqTrimDescriptions ? split.trim() : split, true);
+        			PanelTextBox paDesc = new PanelTextBox(new GuiRectangle(0, panelPrevY+panelPrevHeight+12, cvDesc.getTransform().getWidth(), 0), split, true);
                 	paDesc.setColor(PresetColor.TEXT_MAIN.getColor());
-                    cvDesc.addCulledPanel(paDesc, true);
+                    cvDesc.addCulledPanel(paDesc, false);
                     
                     panelPrevY = panelPrevY+panelPrevHeight+12;
                     panelPrevHeight = paDesc.getTransform().getHeight();
@@ -297,7 +296,7 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         else {
         	PanelTextBox paDesc = new PanelTextBox(new GuiRectangle(0, 0, cvDesc.getTransform().getWidth(), 0), desc, true);
         	paDesc.setColor(PresetColor.TEXT_MAIN.getColor());
-            cvDesc.addCulledPanel(paDesc, true);
+            cvDesc.addCulledPanel(paDesc, false);
             panelPrevY = 32;
             panelPrevHeight = paDesc.getTransform().getHeight()+8;
         }
@@ -318,8 +317,8 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         	PanelTextBox rwdTitle = new PanelTextBox(new GuiRectangle(0, panelPrevY + panelPrevHeight, cvDesc.getTransform().getWidth(), 16, 0), QuestTranslation.translate(rew.getUnlocalisedName())).setColor(PresetColor.TEXT_HEADER.getColor()).setAlignment(1);
         	IGuiPanel pnReward = rew.getRewardGui(new GuiRectangle(0, panelPrevY + panelPrevHeight + 16, cvDesc.getTransform().getWidth(), 32, 0), new DBEntry<>(questID, quest));
         	
-            cvDesc.addCulledPanel(rwdTitle, true);
-            cvDesc.addCulledPanel(pnReward, true);
+            cvDesc.addCulledPanel(rwdTitle, false);
+            cvDesc.addCulledPanel(pnReward, false);
             
             int height = rectReward.getHeight()-32;
             
@@ -333,7 +332,7 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         	
             IGuiPanel pnRewardReplacement = rew.getRewardGui(new GuiRectangle(0, panelPrevY + panelPrevHeight + 16, rectReward.getWidth(), height, 0), new DBEntry<>(questID, quest));
             cvDesc.removePanel(pnReward);
-            cvDesc.addCulledPanel(pnRewardReplacement, true);
+            cvDesc.addCulledPanel(pnRewardReplacement, false);
             
             CanvasEmpty pnRewardReplacementCanvas = (CanvasEmpty)pnRewardReplacement;
         	for(IGuiPanel pnlRepl : pnRewardReplacementCanvas.getChildren()) {
@@ -378,8 +377,8 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         	PanelTextBox tskTitle = new PanelTextBox(new GuiRectangle(0, panelPrevY + panelPrevHeight, rectTask.getWidth(), 16, 0), QuestTranslation.translate(tsk.getUnlocalisedName())).setColor(PresetColor.TEXT_HEADER.getColor()).setAlignment(1);
         	IGuiPanel pnTask = tsk.getTaskGui(new GuiRectangle(0, panelPrevY + panelPrevHeight + 16, rectTask.getWidth(), 32, 0), new DBEntry<>(questID, quest));
         	
-        	tskScroll.addCulledPanel(tskTitle, true);
-        	tskScroll.addCulledPanel(pnTask, true);
+        	tskScroll.addCulledPanel(tskTitle, false);
+        	tskScroll.addCulledPanel(pnTask, false);
         	
         	int height = rectTask.getHeight()-16;//Fallback height if panel does not have scrolling canvas
         	
@@ -402,7 +401,7 @@ public class GuiQuestOverride extends GuiScreenCanvas implements IPEventListener
         		pnTaskReplacement = MobendPatcher.patchPanel(pnTaskReplacement);
         	}
         	
-        	tskScroll.addCulledPanel(pnTaskReplacement, true);
+        	tskScroll.addCulledPanel(pnTaskReplacement, false);
         	
         	//Remove scrollbar from modified panel
         	if(pnTaskReplacement instanceof CanvasEmpty) {

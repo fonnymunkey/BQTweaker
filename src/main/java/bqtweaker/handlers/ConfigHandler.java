@@ -24,10 +24,6 @@ public class ConfigHandler {
 		@Config.Name("BQ Mobends Patch")
 		public boolean bqMobendPatch= true;
 		
-		@Config.Comment("Should BQTweaker automatically trim leading and trailing whitespace from quest descriptions? (Can help make text cleaner, turn off if you'd rather handle whitespace yourself.)")
-		@Config.Name("BQ Trim Descriptions")
-		public boolean bqTrimDescriptions= true;
-		
 		@Config.Comment("Override BQ's Home page?")
 		@Config.Name("BQ Home Override")
 		public boolean bqHomeOverride= true;
