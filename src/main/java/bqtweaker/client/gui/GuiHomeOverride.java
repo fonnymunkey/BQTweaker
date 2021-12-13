@@ -47,6 +47,7 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -111,9 +112,13 @@ public class GuiHomeOverride extends GuiScreenCanvas
 			PanelButton btnNotif = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_RIGHT, -140, -52, 136, 16, 0), 420, (BQ_Settings.questNotices ? QuestTranslation.translate("bqtweaker.notification.enabled") : QuestTranslation.translate("bqtweaker.notification.disabled")))
 			{
 	    		@Override
-	    		public void onButtonClick(){	
-	    		BQ_Settings.questNotices = !BQ_Settings.questNotices;
-	    		this.setText(BQ_Settings.questNotices ? QuestTranslation.translate("bqtweaker.notification.enabled") : QuestTranslation.translate("bqtweaker.notification.disabled"));
+	    		public void onButtonClick(){
+	    			BQ_Settings.questNotices = !BQ_Settings.questNotices;
+	    			if(betterquesting.handlers.ConfigHandler.config != null) {
+		    			betterquesting.handlers.ConfigHandler.config.get(Configuration.CATEGORY_GENERAL, "Use Quest Bookmark", true).set(BQ_Settings.questNotices);
+		    			betterquesting.handlers.ConfigHandler.config.save();
+	    			}
+	    			this.setText(BQ_Settings.questNotices ? QuestTranslation.translate("bqtweaker.notification.enabled") : QuestTranslation.translate("bqtweaker.notification.disabled"));
 	    		}
 	    	};
 	    	btnNotif.setTooltip(Collections.singletonList(QuestTranslation.translate("bqtweaker.notification.tooltip")));
