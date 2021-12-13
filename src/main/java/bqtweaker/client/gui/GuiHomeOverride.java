@@ -115,7 +115,7 @@ public class GuiHomeOverride extends GuiScreenCanvas
 	    		public void onButtonClick(){
 	    			BQ_Settings.questNotices = !BQ_Settings.questNotices;
 	    			if(betterquesting.handlers.ConfigHandler.config != null) {
-		    			betterquesting.handlers.ConfigHandler.config.get(Configuration.CATEGORY_GENERAL, "Use Quest Bookmark", true).set(BQ_Settings.questNotices);
+		    			betterquesting.handlers.ConfigHandler.config.get(Configuration.CATEGORY_GENERAL, "Quest Notices", true).set(BQ_Settings.questNotices);
 		    			betterquesting.handlers.ConfigHandler.config.save();
 	    			}
 	    			this.setText(BQ_Settings.questNotices ? QuestTranslation.translate("bqtweaker.notification.enabled") : QuestTranslation.translate("bqtweaker.notification.disabled"));
