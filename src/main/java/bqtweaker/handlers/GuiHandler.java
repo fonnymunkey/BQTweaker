@@ -1,5 +1,6 @@
 package bqtweaker.handlers;
 
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -64,7 +65,7 @@ public class GuiHandler
     		mc.displayGuiScreen(guiQuestLinesOverride);
     	}
     	
-    	if(event.getGui() instanceof GuiPartyCreate && ConfigHandler.client.bqPartyCreateOverride && ConfigHandler.client.bqMobendPatch) {
+    	if(event.getGui() instanceof GuiPartyCreate && ConfigHandler.client.bqPartyCreateOverride && ConfigHandler.client.bqMobendPatch && Loader.isModLoaded("mobends")) {
     		GuiPartyCreate preGui = (GuiPartyCreate) event.getGui();
     		GuiScreen parent = preGui.parent;
     		Minecraft mc = Minecraft.getMinecraft();
@@ -72,7 +73,7 @@ public class GuiHandler
     		mc.displayGuiScreen(guiPartyCreateOverride);
     	}
     	
-    	if(event.getGui() instanceof GuiPartyManage && ConfigHandler.client.bqPartyManageOverride && ConfigHandler.client.bqMobendPatch) {
+    	if(event.getGui() instanceof GuiPartyManage && ConfigHandler.client.bqPartyManageOverride && ConfigHandler.client.bqMobendPatch && Loader.isModLoaded("mobends")) {
     		GuiPartyManage preGui = (GuiPartyManage) event.getGui();
     		GuiScreen parent = preGui.parent;
     		Minecraft mc = Minecraft.getMinecraft();
