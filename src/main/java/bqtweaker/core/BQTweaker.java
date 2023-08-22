@@ -11,13 +11,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 
 @Mod(modid = BQTweaker.MODID, version = BQTweaker.VERSION, name = BQTweaker.NAME, dependencies = "after:betterquesting")
-public class BQTweaker
-{
-    public static final String MODID = "bqtweaker";
-    public static final String VERSION = "1.3.5";
-    public static final String NAME = "BQTweaker";
+public class BQTweaker {
+    public static final String MODID = "bqutweaker";
+    public static final String VERSION = "1.3.6";
+    public static final String NAME = "BQUTweaker";
     public static final String PROXY = "bqtweaker.core.proxies";
-    public static final String CHANNEL = "BQTWEAKER";
+    public static final String CHANNEL = "BQUTWEAKER";
 	
 	@Instance(MODID)
 	public static BQTweaker instance;
@@ -27,14 +26,12 @@ public class BQTweaker
 	public static Logger logger;
     
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
     	logger = event.getModLog();
     }
     
 	@EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+    public void init(FMLInitializationEvent event) {
 		if(Loader.isModLoaded("betterquesting")) proxy.registerHandlers();
     }
 }

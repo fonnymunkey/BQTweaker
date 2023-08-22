@@ -14,27 +14,7 @@ public class ConfigHandler {
 	@Config.Name("Client")
 	public static final ClientConfig client = new ClientConfig();
 	
-	public static class ClientConfig{
-		
-		@Config.Comment("Should the button for toggling notifications be enabled?")
-		@Config.Name("BQ Notifications Button")
-		public boolean bqNotifEnabled= true;
-		
-		@Config.Comment("Should BQTweaker attempt to patch an entity rendering bug when Mobends is active? (Disabling this disables Party Create and Party Manage overrides as well.)")
-		@Config.Name("BQ Mobends Patch")
-		public boolean bqMobendPatch= true;
-		
-		@Config.Comment("Override BQ's Home page?")
-		@Config.Name("BQ Home Override")
-		public boolean bqHomeOverride= true;
-		
-		@Config.Comment("Override BQ's Party Create page?")
-		@Config.Name("BQ Party Create Override")
-		public boolean bqPartyCreateOverride= true;
-		
-		@Config.Comment("Override BQ's Party Manage page?")
-		@Config.Name("BQ Party Manage Override")
-		public boolean bqPartyManageOverride= true;
+	public static class ClientConfig {
 		
 		@Config.Comment("Override BQ's Quest page?")
 		@Config.Name("BQ Quest Override")
@@ -46,7 +26,7 @@ public class ConfigHandler {
 	}
 	
 	@Mod.EventBusSubscriber(modid = BQTweaker.MODID)
-	private static class EventHandler{
+	private static class EventHandler {
 		@SubscribeEvent
 		public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 			if(event.getModID().equals(BQTweaker.MODID)) ConfigManager.sync(BQTweaker.MODID, Config.Type.INSTANCE);

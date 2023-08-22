@@ -9,7 +9,6 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 version = "${mod_version}"
 group = "${mod_id}"
@@ -32,9 +31,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation fg.deobf("curse.maven:betterquesting-${betterquesting_version}")
-    implementation fg.deobf("curse.maven:bqstandard-${bqstandard_version}")
-    implementation fg.deobf("curse.maven:mobends-${mobends_version}")
+    implementation fg.deobf("curse.maven:bqu-${bqu_version}")
 }
 
 processResources {

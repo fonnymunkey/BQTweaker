@@ -10,9 +10,8 @@ public class BQTweaker_Keybindings {
 	
 	public static KeyBinding pageBack;
 	
-	public static void RegisterKeys()
-	{
-		pageBack = new KeyBinding("bqtweaker.key.pageback", Keyboard.KEY_BACK, BQTweaker.NAME);
+	public static void RegisterKeys() {
+		pageBack = new KeyBinding("bqutweaker.key.pageback", Keyboard.KEY_BACK, BQTweaker.NAME);
 		
 		ClientRegistry.registerKeyBinding(pageBack);
 	}
