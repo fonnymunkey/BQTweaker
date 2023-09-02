@@ -55,11 +55,13 @@ import betterquesting.handlers.ConfigHandler;
 import betterquesting.network.handlers.NetQuestAction;
 import betterquesting.questing.QuestDatabase;
 import betterquesting.questing.QuestLineDatabase;
+import bqtweaker.client.gui.panels.PanelTextBoxTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Tuple;
+import net.minecraftforge.common.config.Configuration;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -76,14 +78,20 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
     private PanelVScrollBar scLines;
     private PanelGeneric icoChapter;
     private PanelTextBox txTitle;
+    private CanvasScrolling txDescScrolling;
+    private PanelVScrollBar txDescDriver;
     private PanelTextBox txDesc;
     private PanelTextBox txCompletion;
     private PanelButton claimAll;
     private PanelButton btnDesign;
     private final List<PanelButtonStorage<DBEntry<IQuestLine>>> btnListRef = new ArrayList<>();
+
+    private static boolean viewMode;
     
     public GuiQuestLinesOverride(GuiScreen parent) {
         super(parent);
+        viewMode = BQ_Settings.viewMode;
+
         if(scrollPosition == null) {
             scrollPosition = new GuiQuestLines.ScrollPosition(0);
         }
@@ -125,18 +133,21 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
         btnExit.setClickAction((b) -> this.mc.displayGuiScreen(this.parent));
         btnExit.setTooltip(Collections.singletonList(QuestTranslation.translate("gui.back")));
         cvBackground.addPanel(btnExit);
-        PanelButton btnSearch = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_LEFT, 8, -40, 16, 16, 0), -1, "").setIcon(PresetIcon.ICON_ZOOM.getTexture());
-        btnSearch.setClickAction(this::openSearch);
-        btnSearch.setTooltip(Collections.singletonList(QuestTranslation.translate("betterquesting.gui.search")));
-        cvBackground.addPanel(btnSearch);
+
+        if(bqtweaker.handlers.ConfigHandler.client.bqQuestSearching) {
+            PanelButton btnSearch = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_LEFT, 8, -40, 16, 16, 0), -1, "").setIcon(PresetIcon.ICON_ZOOM.getTexture());
+            btnSearch.setClickAction(this::openSearch);
+            btnSearch.setTooltip(Collections.singletonList(QuestTranslation.translate("betterquesting.gui.search")));
+            cvBackground.addPanel(btnSearch);
+        }
         
         if(canEdit) {
-            PanelButton btnEdit = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_LEFT, 8, -56, 16, 16, 0), -1, "").setIcon(PresetIcon.ICON_GEAR.getTexture());
+            PanelButton btnEdit = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_LEFT, 8, -40 - (bqtweaker.handlers.ConfigHandler.client.bqQuestSearching ? 16 : 0), 16, 16, 0), -1, "").setIcon(PresetIcon.ICON_GEAR.getTexture());
             btnEdit.setClickAction((b) -> this.mc.displayGuiScreen(new GuiQuestLinesEditor(this)));
             btnEdit.setTooltip(Collections.singletonList(QuestTranslation.translate("betterquesting.btn.edit")));
             cvBackground.addPanel(btnEdit);
 
-            this.btnDesign = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_LEFT, 8, -72, 16, 16, 0), -1, "").setIcon(PresetIcon.ICON_SORT.getTexture());
+            this.btnDesign = new PanelButton(new GuiTransform(GuiAlign.BOTTOM_LEFT, 8, -56 - (bqtweaker.handlers.ConfigHandler.client.bqQuestSearching ? 16 : 0), 16, 16, 0), -1, "").setIcon(PresetIcon.ICON_SORT.getTexture());
             this.btnDesign.setClickAction((b) -> this.mc.displayGuiScreen(new GuiDesigner(this, this.selectedLine)));
             this.btnDesign.setTooltip(Collections.singletonList(QuestTranslation.translate("betterquesting.btn.designer")));
             cvBackground.addPanel(this.btnDesign);
@@ -147,23 +158,33 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
         this.icoChapter = new PanelGeneric(new GuiTransform(GuiAlign.TOP_LEFT, 8, 8, 16, 16, 0), null);
         cvTopBar.addPanel(this.icoChapter);
 
-        CanvasScrolling txTitleScroll = new CanvasScrolling(new GuiTransform(GuiAlign.HALF_LEFT, new GuiPadding(26, 8, 70, 6), 0));
+        CanvasScrolling txTitleScroll = new CanvasScrolling(new GuiTransform(GuiAlign.HALF_LEFT, new GuiPadding(26, 8, 46, 6), 0));
         cvTopBar.addPanel(txTitleScroll);
-        this.txTitle = new PanelTextBox(new GuiRectangle(0, 0, txTitleScroll.getTransform().getWidth(), txTitleScroll.getTransform().getHeight()), "", true);
+        this.txTitle = new PanelTextBoxTooltip(new GuiRectangle(0, 0, txTitleScroll.getTransform().getWidth(), txTitleScroll.getTransform().getHeight()), "", true);
         this.txTitle.setColor(PresetColor.TEXT_HEADER.getColor());
         txTitleScroll.addCulledPanel(this.txTitle, false);
 
-        CanvasScrolling txCompletionScroll = new CanvasScrolling(new GuiTransform(GuiAlign.HALF_LEFT, new GuiPadding(30 + txTitleScroll.getTransform().getWidth(), 8, 2, 6), 0));
+        CanvasScrolling txCompletionScroll = new CanvasScrolling(new GuiTransform(GuiAlign.HALF_LEFT, new GuiPadding(34 + txTitleScroll.getTransform().getWidth(), 8, 8, 6), 0));
         cvTopBar.addPanel(txCompletionScroll);
         this.txCompletion = new PanelTextBox(new GuiRectangle(0, 0, txCompletionScroll.getTransform().getWidth(), txCompletionScroll.getTransform().getHeight()), "", true);
         this.txCompletion.setColor(PresetColor.TEXT_HEADER.getColor());
         txCompletionScroll.addCulledPanel(this.txCompletion, false);
 
-        CanvasScrolling txDescScroll = new CanvasScrolling(new GuiTransform(GuiAlign.HALF_RIGHT, new GuiPadding(2, 8, 6, 6), 0));
-        cvTopBar.addPanel(txDescScroll);
-        this.txDesc = new PanelTextBox(new GuiRectangle(0, 0, txDescScroll.getTransform().getWidth(), txDescScroll.getTransform().getHeight()), "", true);
+        CanvasEmpty txDescEmpty = new CanvasEmpty(new GuiTransform(GuiAlign.HALF_RIGHT, new GuiPadding(0, 8, 8, 6), 0));
+        cvTopBar.addPanel(txDescEmpty);
+        //CanvasScrolling txDescScroll = new CanvasScrolling(new GuiTransform(GuiAlign.HALF_RIGHT, new GuiPadding(0, 8, 6, 6), 0));
+        //cvTopBar.addPanel(txDescScroll);
+        this.txDescScrolling = new CanvasScrolling(new GuiTransform(GuiAlign.FULL_BOX, new GuiPadding(0, 0, 8, 0), 0));
+        txDescEmpty.addPanel(this.txDescScrolling);
+        this.txDescDriver = new PanelVScrollBar(new GuiTransform(GuiAlign.RIGHT_EDGE, new GuiPadding(-8, 0, 0, 0), 0));
+        this.txDescScrolling.setScrollDriverY(this.txDescDriver);
+        txDescEmpty.addPanel(this.txDescDriver);
+        this.txDesc = new PanelTextBoxTooltip(new GuiRectangle(0, 0, this.txDescScrolling.getTransform().getWidth(), this.txDescScrolling.getTransform().getHeight()), "", true);
         this.txDesc.setColor(PresetColor.TEXT_HEADER.getColor());
-        txDescScroll.addCulledPanel(this.txDesc, false);
+        this.txDescScrolling.addCulledPanel(this.txDesc, false);
+        this.txDescScrolling.refreshScrollBounds();
+        this.txDescScrolling.updatePanelScroll();
+        this.txDescDriver.setEnabled(this.txDescScrolling.getScrollBounds().getHeight() > 0);
 
         CanvasHoverTray cvFrame = new CanvasHoverTray(new GuiTransform(GuiAlign.FULL_BOX, new GuiPadding(174, 32, 8, 8), 0), new GuiTransform(GuiAlign.FULL_BOX, new GuiPadding(180, 32, 8, 8), 0), PresetTexture.AUX_FRAME_0.getTexture());
         cvFrame.setManualOpen(true);
@@ -220,7 +241,22 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
         );
         this.claimAll.setTooltip(Collections.singletonList(QuestTranslation.translate("betterquesting.btn.claim_all")));
         cvBackground.addPanel(this.claimAll);
-        
+
+        // View Mode Button
+        if(bqtweaker.handlers.ConfigHandler.client.bqViewMode) {
+            PanelButton btnViewMode = new PanelButton(new GuiTransform(GuiAlign.TOP_LEFT, 8, 64, 16, 16, -2), -1, "").setIcon(viewMode ? PresetIcon.ICON_VISIBILITY_NORMAL.getTexture() : PresetIcon.ICON_VISIBILITY_HIDDEN.getTexture());
+            btnViewMode.setClickAction((b) -> {
+                viewMode = !viewMode;
+                b.setIcon(viewMode ? PresetIcon.ICON_VISIBILITY_NORMAL.getTexture() : PresetIcon.ICON_VISIBILITY_HIDDEN.getTexture());
+                ConfigHandler.config.get(Configuration.CATEGORY_GENERAL, "View mode", false).set(viewMode);
+                ConfigHandler.config.save();
+                ConfigHandler.initConfigs();
+                refreshGui();
+            });
+            btnViewMode.setTooltip(Collections.singletonList(QuestTranslation.translate("betterquesting.btn.view_mode")));
+            cvBackground.addPanel(btnViewMode);
+        }
+
         // === CHAPTER VIEWPORT ===
         
         CanvasQuestLine oldCvQuest = this.cvQuest;
@@ -296,6 +332,9 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
             this.refreshQuestCompletion();
             this.txTitle.setText(QuestTranslation.translate(this.selectedLine.getUnlocalisedName()));
             this.txDesc.setText(QuestTranslation.translate(this.selectedLine.getUnlocalisedDescription()));
+            this.txDescScrolling.refreshScrollBounds();
+            this.txDescScrolling.updatePanelScroll();
+            this.txDescDriver.setEnabled(this.txDescScrolling.getScrollBounds().getHeight() > 0);
             this.icoChapter.setTexture(new OreDictTexture(1F, this.selectedLine.getProperty(NativeProps.ICON), false, true), null);
         }
         
@@ -385,6 +424,8 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
                 unlocked = true;
                 complete = true;
             }
+
+            if(viewMode) show = true;
             
             for(DBEntry<IQuestLineEntry> qID : ql.getEntries()) {
                 IQuest q = QuestDatabase.INSTANCE.getValue(qID.getID());
@@ -457,6 +498,9 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
                 this.refreshQuestCompletion();
                 this.txTitle.setText(QuestTranslation.translate(q.getValue().getUnlocalisedName()));
                 this.txDesc.setText(QuestTranslation.translate(q.getValue().getUnlocalisedDescription()));
+                this.txDescScrolling.refreshScrollBounds();
+                this.txDescScrolling.updatePanelScroll();
+                this.txDescDriver.setEnabled(this.txDescScrolling.getScrollBounds().getHeight() > 0);
                 this.cvQuest.fitToWindow();
                 this.refreshClaimAll();
                 this.refreshDesigner();
@@ -488,7 +532,8 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
                 }
             }
 
-            this.txCompletion.setText(QuestTranslation.translate("betterquesting.title.completion", questsCompleted, totalQuests));
+            //this.txCompletion.setText(QuestTranslation.translate("betterquesting.title.completion", questsCompleted, totalQuests));
+            this.txCompletion.setText(questsCompleted + "/" + totalQuests);
         }
     }
 
@@ -531,11 +576,17 @@ public class GuiQuestLinesOverride extends GuiScreenCanvas implements IPEventLis
             this.refreshQuestCompletion();
             this.txTitle.setText(QuestTranslation.translate(this.selectedLine.getUnlocalisedName()));
             this.txDesc.setText(QuestTranslation.translate(this.selectedLine.getUnlocalisedDescription()));
+            this.txDescScrolling.refreshScrollBounds();
+            this.txDescScrolling.updatePanelScroll();
+            this.txDescDriver.setEnabled(this.txDescScrolling.getScrollBounds().getHeight() > 0);
             this.icoChapter.setTexture(new OreDictTexture(1F, this.selectedLine.getProperty(NativeProps.ICON), false, true), null);
         }
         else {
             this.txTitle.setText("");
             this.txDesc.setText("");
+            this.txDescScrolling.refreshScrollBounds();
+            this.txDescScrolling.updatePanelScroll();
+            this.txDescDriver.setEnabled(this.txDescScrolling.getScrollBounds().getHeight() > 0);
             this.icoChapter.setTexture(null, null);
         }
 

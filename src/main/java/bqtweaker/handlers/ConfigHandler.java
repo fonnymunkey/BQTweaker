@@ -23,6 +23,18 @@ public class ConfigHandler {
 		@Config.Comment("Override BQ's Questline page?")
 		@Config.Name("BQ Questline Override")
 		public boolean bqQuestlineOverride= true;
+
+		@Config.Comment("Allow View Mode?")
+		@Config.Name("BQ View Mode")
+		public boolean bqViewMode = false;
+
+		@Config.Comment("Allow Quest Searching?")
+		@Config.Name("BQ Quest Searching")
+		public boolean bqQuestSearching = false;
+
+		@Config.Comment("Stop rebinded Back button from going to quest home page while in the questlines page?")
+		@Config.Name("Limit Rebinded Back Button")
+		public boolean bqLimitBack = false;
 	}
 	
 	@Mod.EventBusSubscriber(modid = BQTweaker.MODID)

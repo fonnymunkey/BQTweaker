@@ -1,5 +1,6 @@
 package bqtweaker.handlers;
 
+import betterquesting.client.gui2.GuiHome;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,6 +55,7 @@ public class GuiHandler {
 			boolean keyUsed = false;
 			GuiScreenCanvas currScreenCanvas = (GuiScreenCanvas)mc.currentScreen;
 			if(currScreenCanvas.parent == null) return;
+			if(currScreenCanvas.parent instanceof GuiHome && (currScreenCanvas instanceof GuiQuestLinesOverride || currScreenCanvas instanceof GuiQuestLines) && ConfigHandler.client.bqLimitBack) return;
 			try {
 				ListIterator<IGuiPanel> pnIter = currScreenCanvas.getChildren().listIterator(currScreenCanvas.getChildren().size());
 				while(pnIter.hasPrevious()) {
